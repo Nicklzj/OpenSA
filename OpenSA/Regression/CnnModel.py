@@ -21,7 +21,8 @@ class ConvNet(nn.Module):
             nn.BatchNorm1d(64),
             nn.ReLU()
         )
-        self.fc = nn. Linear(38080,1) #8960 ,17920
+        self.fc = nn.Linear(64448,1) #8960 ,17920
+        # self.fc = nn. Linear(38080,1) #8960 ,17920
         self.drop = nn.Dropout(0.2)
 
     def forward(self,out):
@@ -29,7 +30,10 @@ class ConvNet(nn.Module):
       out = self.conv2(out)
       out = self.conv3(out)
       out = out.view(out.size(0),-1)
-      # print(out.size(1))
+      print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+      print(out.shape)
+      print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+
       out = self.fc(out)
       return out
 
@@ -70,7 +74,7 @@ class AlexNet(nn.Module):
             # nn.LeakyReLU(inplace=True),
         )
         self.reg = nn.Sequential(
-            nn.Linear(3840, 1000),  #根据自己数据集修改
+            nn.Linear(6336, 1000),  #根据自己数据集修改
             nn.ReLU(inplace=True),
             # nn.LeakyReLU(inplace=True),
             nn.Linear(1000, 500),
@@ -83,6 +87,10 @@ class AlexNet(nn.Module):
     def forward(self, x):
         out = self.features(x)
         out = out.flatten(start_dim=1)
+        # print
+        print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        print(out.shape)
+        print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         out = self.reg(out)
         return out
 
@@ -129,6 +137,7 @@ class DeepSpectra(nn.Module):
         self.Inception = Inception(16, 32, 32, 32, 96)
         self.fc = nn.Sequential(
             nn.Linear(20640, 5000),
+            # nn.Linear(33888, 5000),
             nn.Dropout(0.5),
             nn.Linear(5000, 1)
         )
@@ -138,7 +147,45 @@ class DeepSpectra(nn.Module):
         x = self.conv1(x)
         x = self.Inception(x)
         x = x.view(x.size(0), -1)
+        print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        print(x.shape)
+        print("out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
         x = self.fc(x)
 
         return x
 
+
+#         self.conv1 = nn.Sequential(
+#             nn.Conv1d(1, 16, kernel_size=21, padding=0),
+#             nn.BatchNorm1d(16),
+#             nn.ReLU()
+#         )
+
+
+class CNN_LSTM(nn.Module):
+    def __init__(self, conv_input,input_size, hidden_size, num_layers, output_size):
+        super(CNN_LSTM,self).__init__()
+        self.hidden_size = hidden_size
+        self.num_layers = num_layers
+        # self.conv=nn.Conv1d(conv_input,conv_input,1)
+        self.conv = nn.Sequential(
+        nn.Conv1d(1, 16, kernel_size=21, padding=0),
+        nn.BatchNorm1d(16),
+        nn.ReLU()
+        )
+        self.lstm = nn.LSTM(input_size, hidden_size, num_layers, batch_first=True)
+        self.fc = nn.Linear(hidden_size, output_size)
+    
+    def forward(self, x):
+        x=self.conv(x)
+        h0 = torch.zeros(self.num_layers,x.size(0), self.hidden_size) # 初始化隐藏状态h0
+        c0 = torch.zeros(self.num_layers,x.size(0), self.hidden_size)  # 初始化记忆状态c0
+        #print(f"x.shape:{x.shape},h0.shape:{h0.shape},c0.shape:{c0.shape}")
+
+        print("cnn-lstm out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+        print(x.shape)
+        print("cnn-lstm out^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
+
+        out, _ = self.lstm(x, (h0, c0))  # LSTM前向传播
+        out = self.fc(out[:, -1, :])  # 取最后一个时间步的输出作为预测结果
+        return out

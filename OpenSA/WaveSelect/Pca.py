@@ -11,7 +11,7 @@
 
 from sklearn.decomposition import PCA
 
-def Pca(X, nums=20):
+def Pca(X, nums=649):
     """
        :param X: raw spectrum data, shape (n_samples, n_features)
        :param nums: Number of principal components retained

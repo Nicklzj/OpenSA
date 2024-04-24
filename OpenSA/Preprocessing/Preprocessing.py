@@ -93,6 +93,7 @@ def SG(data, w=11, p=2):
        :param p: int
        :return: data after SG :(n_samples, n_features)
     """
+    
     return signal.savgol_filter(data, w, p)
 
 

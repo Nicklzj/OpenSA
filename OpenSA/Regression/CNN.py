@@ -13,7 +13,7 @@ import torchvision
 import torch.nn.functional as F
 from sklearn.preprocessing import scale,MinMaxScaler,Normalizer,StandardScaler
 import torch.optim as optim
-from Regression.CnnModel import ConvNet, DeepSpectra, AlexNet
+from Regression.CnnModel import CNN_LSTM, ConvNet, DeepSpectra, AlexNet
 import os
 from datetime import datetime
 from Evaluate.RgsEvaluate import ModelRgsevaluate, ModelRgsevaluatePro
@@ -22,6 +22,7 @@ import matplotlib.pyplot  as plt
 
 LR = 0.001
 BATCH_SIZE = 16
+# BATCH_SIZE = 
 TBATCH_SIZE = 240
 
 
@@ -99,7 +100,16 @@ def CNNTrain(NetType, X_train, X_test, y_train, y_test, EPOCH):
         model = AlexNet().to(device)
     elif NetType == 'DeepSpectra':
         model = DeepSpectra().to(device)
-
+    elif NetType == 'CNN_LSTM':
+        # model = CNN_LSTM().to(device)
+        # 定义输入、隐藏状态和输出维度
+        input_size = 1  # 输入特征维度
+        conv_input=12
+        hidden_size = 64  # LSTM隐藏状态维度
+        num_layers = 5  # LSTM层数
+        output_size = 1  # 输出维度（预测目标维度）
+        # 创建CNN_LSTM模型实例
+        model =CNN_LSTM(conv_input,input_size, hidden_size, num_layers, output_size)
 
 
     criterion = nn.MSELoss().to(device)  # 损失函数为焦损函数，多用于类别不平衡的多分类问题

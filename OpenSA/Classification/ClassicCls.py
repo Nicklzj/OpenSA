@@ -10,6 +10,7 @@
 """
 
 
+import joblib
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
@@ -18,6 +19,7 @@ import numpy as np
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestClassifier
 import pandas  as pd
+import pickle
 
 def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
 
@@ -30,6 +32,10 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     # solver='lbfgs',  MLP的求解方法：L-BFGS 在小数据上表现较好，Adam 较为鲁棒，
     # SGD在参数调整较优时会有最佳表现（分类效果与迭代次数）,SGD标识随机梯度下降。
     #clf =  MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(8,8), random_state=1, activation='relu')
+
+    # clf =  MLPClassifier()
+    # joblib.dump(clf, 'data.pkl')#也可以使用文件对象
+
     clf =  MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto', beta_1=0.9,
                   beta_2=0.999, early_stopping=False, epsilon=1e-08,
                   hidden_layer_sizes=(10, 8), learning_rate='constant',
@@ -42,6 +48,17 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     predict_results=clf.predict(X_test)
     acc = accuracy_score(predict_results, y_test.ravel())
 
+
+
+
+    #添加保存模型的代码
+ 
+    # print (clf2.predict(X[0:1]))
+    # joblib.dump(clf, 'data.pkl')#也可以使用文件对象
+    # clf = joblib.load('data.pkl') 
+    print("-------------------------\n")
+    print(clf)
+    print("-------------------------\n")
     return acc
 
 def SVM(X_train, X_test, y_train, y_test):
@@ -71,7 +88,11 @@ def PLS_DA(X_train, X_test, y_train, y_test):
 def RF(X_train, X_test, y_train, y_test):
 
     RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
+    # joblib.dump(RF, 'RF.pkl')#也可以使用文件对象
+    # RF = joblib.load('RF.pkl') 
     RF.fit(X_train, y_train)
+    joblib.dump(RF, 'RF.pkl')#也可以使用文件对象
+    RF = joblib.load('RF.pkl') 
     y_pred = RF.predict(X_test)
     acc = accuracy_score(y_test, y_pred)
 

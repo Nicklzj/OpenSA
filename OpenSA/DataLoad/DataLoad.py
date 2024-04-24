@@ -11,6 +11,7 @@
 
 
 
+import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 
@@ -165,26 +166,54 @@ def ks(data, label, test_size=0.2):
 
 # 分别使用一个回归、一个分类的公开数据集做为example
 def LoadNirtest(type):
-
+    mode = "default"
     if type == "Rgs":
-        CDataPath1 = './/Data//Rgs//Cdata1.csv'
-        VDataPath1 = './/Data//Rgs//Vdata1.csv'
-        TDataPath1 = './/Data//Rgs//Tdata1.csv'
+        if(mode != 'default'):
 
-        Cdata1 = np.loadtxt(open(CDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-        Vdata1 = np.loadtxt(open(VDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-        Tdata1 = np.loadtxt(open(TDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            # CDataPath3 = './/Data//Rgs//Cdata1.csv'
+            # VDataPath3 = './/Data//Rgs//Vdata1.csv'
+            # TDataPath3 = './/Data//Rgs//Tdata1.csv'
+            nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
+            # CDataPath3 = nowpath+'.//Data//Rgs//Cdata1.csv'
+            # VDataPath3 = nowpath+'.//Data//Rgs//Vdata1.csv'
+            # TDataPath3 = nowpath+'.//Data//Rgs//Tdata1.csv'
+            CDataPath3 = nowpath+'//Data//Rgs//C3.csv'
+            # VDataPath3 = nowpath+'//Data//Rgs//V3.csv'
+            TDataPath3 = nowpath+'//Data//Rgs//T3.csv'
+            Cdata1 = np.loadtxt(open(CDataPath3, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            # Vdata1 = np.loadtxt(open(VDataPath3, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            Tdata1 = np.loadtxt(open(TDataPath3, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            Nirdata = np.concatenate((Cdata1, Tdata1))
+            
+            pd.DataFrame(Nirdata).to_csv('Nirdata.csv', index=False)
+            data = Nirdata[:, :-1]
+            label = Nirdata[:, -1]
+            # np.savetxt('data.txt', data)
+            # np.savetxt('label.txt', label)   
 
-        Nirdata1 = np.concatenate((Cdata1, Vdata1))
-        Nirdata = np.concatenate((Nirdata1, Tdata1))
-        data = Nirdata[:, :-4]
-        label = Nirdata[:, -1]
+            # pd.DataFrame(data).to_csv('data.csv', index=False)
+            # pd.DataFrame(label).to_csv('label.csv', index=False)
+   
+        elif(mode == 'default'):
+            CDataPath1 = './/Data//Rgs//Cdata1.csv'
+            VDataPath1 = './/Data//Rgs//Vdata1.csv'
+            TDataPath1 = './/Data//Rgs//Tdata1.csv'
+            nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
 
+            Cdata1 = np.loadtxt(open(nowpath+CDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            Vdata1 = np.loadtxt(open(nowpath+VDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            Tdata1 = np.loadtxt(open(nowpath+TDataPath1, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+
+            Nirdata1 = np.concatenate((Cdata1, Vdata1))
+            Nirdata = np.concatenate((Nirdata1, Tdata1))
+            data = Nirdata[:, :-4]
+            label = Nirdata[:, -3:-1]
     elif type == "Cls":
-        path = './/Data//Cls//table.csv'
+        nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
+        path =  nowpath+'//Data//Cls//table.csv'
         Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
         data = Nirdata[:, :-1]
-        label = Nirdata[:, -1]
+        label = Nirdata[:, -2]
 
     return data, label
 

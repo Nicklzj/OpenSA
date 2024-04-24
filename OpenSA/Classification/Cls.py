@@ -9,11 +9,17 @@
 
 """
 
+import joblib
+import sklearn
+from sklearn.metrics import accuracy_score,auc,roc_curve,precision_recall_curve,f1_score
+
+# from sklearn.base import accuracy_score
+# from sklearn.base import accuracy_score
 from Classification.ClassicCls import ANN, SVM, PLS_DA, RF
 from Classification.CNN import CNN
 from Classification.SAE import SAE
 
-def  QualitativeAnalysis(model, X_train, X_test, y_train, y_test):
+def  QualitativeAnalysis(model, X_train, X_test, y_train, y_test) -> float:
 
     if model == "PLS_DA":
         acc = PLS_DA(X_train, X_test, y_train, y_test)
@@ -22,6 +28,13 @@ def  QualitativeAnalysis(model, X_train, X_test, y_train, y_test):
     elif model == "SVM":
         acc = SVM(X_train, X_test, y_train, y_test)
     elif model == "RF":
+        # RF = joblib.load('RF.pkl') 
+        # y_pred = RF.predict(X_test)
+        # acc = accuracy_score(y_test, y_pred)
+        # return acc
+        # acc = accuracy_score(y_test, y_pred)
+        # print(acc)
+        # print("??????????????")
         acc = RF(X_train, X_test, y_train, y_test)
     elif model == "CNN":
         acc = CNN(X_train, X_test, y_train, y_test, 16, 160, 4)
