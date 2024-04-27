@@ -22,8 +22,8 @@ from Simcalculation.SimCa import Simcalculation
 from Clustering.Cluster import Cluster
 from Regression.Rgs import QuantitativeAnalysis
 from Classification.Cls import QualitativeAnalysis
-from lazypredict.Supervised import LazyClassifier
-from lazypredict.Supervised import LazyRegressor
+# from lazypredict.Supervised import LazyClassifier
+# from lazypredict.Supervised import LazyRegressor
 import airpls
 import matplotlib.pyplot as plt#导入强大的绘图库
 
@@ -130,7 +130,7 @@ if __name__ == '__main__':
         print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
         print(label2.shape) 
         print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SG", "None", "ks", "SVR")
+        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "None", "None", "random", "CNN")
         print("The Pca RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
     
     else:

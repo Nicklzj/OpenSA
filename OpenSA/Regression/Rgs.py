@@ -9,13 +9,14 @@
 
 """
 
-from Regression.ClassicRgs import BayesianRidgeEvaluate, BpNeuralNetworkEvaluate, D1_nnEvaluate, LassoLarsCVEvaluate, Lazy, Anngression, LstmEvaluate, Svregression, ELM,Pls
+from Regression.ClassicRgs import BayesianRidgeEvaluate, BpNeuralNetworkEvaluate, D1_nnEvaluate, LassoLarsCVEvaluate,  Anngression, LstmEvaluate, Svregression, ELM,Pls
 from Regression.CNN import CNNTrain
 
 def  QuantitativeAnalysis(model, X_train, X_test, y_train, y_test):
 
     if model == "Lazy":
-        Rmse, R2, Mae = Lazy(X_train, X_test, y_train, y_test)
+        # Rmse, R2, Mae = Lazy(X_train, X_test, y_train, y_test)
+        1
     elif model == "BpNeuralNetworkEvaluate":
         Rmse, R2, Mae = BpNeuralNetworkEvaluate(X_train, X_test, y_train, y_test)
     elif model =="D1_nnEvaluate":

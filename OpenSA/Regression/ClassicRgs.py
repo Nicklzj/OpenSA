@@ -21,7 +21,7 @@ from sklearn.neural_network import MLPRegressor
 
 from sklearn.svm import SVR
 from Evaluate.RgsEvaluate import ModelRgsevaluate
-from lazypredict.Supervised import LazyRegressor
+# from lazypredict.Supervised import LazyRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LassoLarsCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
@@ -156,6 +156,10 @@ def Pls( X_train, X_test, y_train, y_test):
 
     model = PLSRegression(n_components=8)
     # fit the model
+    print("================shape====================")
+    print(X_train.shape)
+    print(y_train.shape)
+    print("================shape====================")
     model.fit(X_train, y_train)
 
     # predict the values
@@ -167,19 +171,19 @@ def Pls( X_train, X_test, y_train, y_test):
 
 
 
-def Lazy( X_train, X_test, y_train, y_test):
-    reg = LazyRegressor(ignore_warnings=False, custom_metric=None)
-    # Fit LazyRegressor
-    models, predictions = reg.fit(X_train, X_test, y_train, y_test)
-    # Print the models
-    print(models)
+# def Lazy( X_train, X_test, y_train, y_test):
+#     reg = LazyRegressor(ignore_warnings=False, custom_metric=None)
+#     # Fit LazyRegressor
+#     models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+#     # Print the models
+#     print(models)
     
-    best_model = models.iloc[0]
-    print("----------------------------------------")
-    print(best_model)
-    print("----------------------------------------")
-    print(predictions)
-    return None, None, None  # 或者根据你的需要进行处理
+#     best_model = models.iloc[0]
+#     print("----------------------------------------")
+#     print(best_model)
+#     print("----------------------------------------")
+#     print(predictions)
+#     return None, None, None  # 或者根据你的需要进行处理
 
 def Svregression(X_train, X_test, y_train, y_test):
 
