@@ -52,16 +52,24 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     acc = accuracy_score(predict_results, y_test.ravel())
 
 
+    loaded_label_map = joblib.load('label_map.pkl')
 
 
-    #添加保存模型的代码
- 
-    # print (clf2.predict(X[0:1]))
-    # joblib.dump(clf, 'data.pkl')#也可以使用文件对象
-    # clf = joblib.load('data.pkl') 
-    print("-------------------------\n")
-    print(clf)
-    print("-------------------------\n")
+    nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
+    path =  nowpath+'//new_test_output.csv'
+
+    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    
+    x_newTest = Nirdata[:, :-1]
+    y_new_pred = clf.predict(x_newTest)
+    print(y_new_pred)
+    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
+    print(y_pred_str)
+
+  
+    print(x_newTest.shape)
+
+   
     return acc
 
 def SVM(X_train, X_test, y_train, y_test):
@@ -80,26 +88,17 @@ def SVM(X_train, X_test, y_train, y_test):
         3: 'junmeishu',
         4: 'malaisuanlvnaming'
     }
-    joblib.dump(clf, 'model.pkl')
     joblib.dump(label_map, 'label_map.pkl')
-
-    # 加载模型和标签映射
-    loaded_model = joblib.load('model.pkl')
     loaded_label_map = joblib.load('label_map.pkl')
-
-
-    nowpath    = 'F://github//graduate-code//OpenSA' 
-    path =  nowpath+'//new_test.csv'
-
+    nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
+    path =  nowpath+'//new_test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-    
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = loaded_model.predict(x_newTest)
+    y_new_pred = clf.predict(x_newTest)
     print(y_new_pred)
     y_pred_str = [loaded_label_map[label] for label in y_new_pred]
     print(y_pred_str)
 
-  
     print(x_newTest.shape)
 
 
@@ -166,21 +165,21 @@ def RF(X_train, X_test, y_train, y_test):
         3: 'junmeishu',
         4: 'malaisuanlvnaming'
     }
-    joblib.dump(RF, 'model.pkl')
+    # joblib.dump(RF, 'model.pkl')
     joblib.dump(label_map, 'label_map.pkl')
 
     # 加载模型和标签映射
-    loaded_model = joblib.load('model.pkl')
+    # loaded_model = joblib.load('model.pkl')
     loaded_label_map = joblib.load('label_map.pkl')
 
 
-    nowpath    = 'F://github//graduate-code//OpenSA' 
-    path =  nowpath+'//new_test.csv'
+    nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
+    path =  nowpath+'//new_test_output.csv'
 
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
     
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = loaded_model.predict(x_newTest)
+    y_new_pred = RF.predict(x_newTest)
     print(y_new_pred)
     y_pred_str = [loaded_label_map[label] for label in y_new_pred]
     print(y_pred_str)

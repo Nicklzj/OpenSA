@@ -135,6 +135,6 @@ if __name__ == '__main__':
     
     else:
         data1, label1 = LoadNirtest('Cls')
-        acc = SpectralQualitativeAnalysis(data1, label1, "SG", "None", "random", "SVM")
+        acc = SpectralQualitativeAnalysis(data1, label1, "SNV", "None", "random", "Lazy")
         print("The model  acc:{} of result!".format(acc))
 
