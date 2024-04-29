@@ -21,6 +21,9 @@ from sklearn.ensemble import RandomForestClassifier
 import pandas  as pd
 import pickle
 
+# from OpenSA.Classification.DataLoad import LoadNirtest
+
+ 
 def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
 
     if StandScaler:
@@ -69,6 +72,37 @@ def SVM(X_train, X_test, y_train, y_test):
     predict_results = clf.predict(X_test)
     acc = accuracy_score(predict_results, y_test.ravel())
 
+
+    label_map = {
+        0: 'buluofen',
+        1: 'duiyixiananjifen',
+        2: 'fufangduiyixiananjifen',
+        3: 'junmeishu',
+        4: 'malaisuanlvnaming'
+    }
+    joblib.dump(clf, 'model.pkl')
+    joblib.dump(label_map, 'label_map.pkl')
+
+    # 加载模型和标签映射
+    loaded_model = joblib.load('model.pkl')
+    loaded_label_map = joblib.load('label_map.pkl')
+
+
+    nowpath    = 'F://github//graduate-code//OpenSA' 
+    path =  nowpath+'//new_test.csv'
+
+    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    
+    x_newTest = Nirdata[:, :-1]
+    y_new_pred = loaded_model.predict(x_newTest)
+    print(y_new_pred)
+    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
+    print(y_pred_str)
+
+  
+    print(x_newTest.shape)
+
+
     return acc
 
 def PLS_DA(X_train, X_test, y_train, y_test):
@@ -83,17 +117,75 @@ def PLS_DA(X_train, X_test, y_train, y_test):
     y_pred = np.array([np.argmax(i) for i in y_pred])
     acc = accuracy_score(y_test, y_pred)
 
+
+    label_map = {
+        0: 'buluofen',
+        1: 'duiyixiananjifen',
+        2: 'fufangduiyixiananjifen',
+        3: 'junmeishu',
+        4: 'malaisuanlvnaming'
+    }
+    joblib.dump(model, 'model.pkl')
+    joblib.dump(label_map, 'label_map.pkl')
+
+    # 加载模型和标签映射
+    loaded_model = joblib.load('model.pkl')
+    loaded_label_map = joblib.load('label_map.pkl')
+
+
+    nowpath    = 'F://github//graduate-code//OpenSA' 
+    path =  nowpath+'//new_test.csv'
+
+    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    
+    x_newTest = Nirdata[:, :-1]
+    y_new_pred = loaded_model.predict(x_newTest)
+    print(x_newTest)
+    print(y_new_pred)
+    y_pred_str = [loaded_label_map[labelS] for labelS in y_new_pred]
+    # print(y_pred_str)
+    # print(x_newTest.shape)
+
+
+
     return acc
 
 def RF(X_train, X_test, y_train, y_test):
 
     RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
-    # joblib.dump(RF, 'RF.pkl')#也可以使用文件对象
-    # RF = joblib.load('RF.pkl') 
     RF.fit(X_train, y_train)
-    joblib.dump(RF, 'RF.pkl')#也可以使用文件对象
-    RF = joblib.load('RF.pkl') 
-    y_pred = RF.predict(X_test)
+
+    y_pred = RF.predict(X_test)    
     acc = accuracy_score(y_test, y_pred)
+ 
+
+    label_map = {
+        0: 'buluofen',
+        1: 'duiyixiananjifen',
+        2: 'fufangduiyixiananjifen',
+        3: 'junmeishu',
+        4: 'malaisuanlvnaming'
+    }
+    joblib.dump(RF, 'model.pkl')
+    joblib.dump(label_map, 'label_map.pkl')
+
+    # 加载模型和标签映射
+    loaded_model = joblib.load('model.pkl')
+    loaded_label_map = joblib.load('label_map.pkl')
+
+
+    nowpath    = 'F://github//graduate-code//OpenSA' 
+    path =  nowpath+'//new_test.csv'
+
+    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    
+    x_newTest = Nirdata[:, :-1]
+    y_new_pred = loaded_model.predict(x_newTest)
+    print(y_new_pred)
+    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
+    print(y_pred_str)
+
+  
+    print(x_newTest.shape)
 
     return acc

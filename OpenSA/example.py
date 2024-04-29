@@ -118,7 +118,7 @@ if __name__ == '__main__':
     # # 示意1: 预处理算法:MSC , 波长筛选算法: 不使用, 全波长建模, 数据集划分:随机划分, 定性分析模型: RF
     # acc = SpectralQualitativeAnalysis(data1, label1, "MSC", "Lars", "random", "PLS_DA")
     # print("The acc:{} of result!".format(acc))
-    mode ="dingliang"
+    mode ="dingxing"
     if(mode=="dingliang"):
     ## 载入原始数据并可视化
     # 光谱定量分析演示
@@ -130,11 +130,11 @@ if __name__ == '__main__':
         print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
         print(label2.shape) 
         print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SG", "None", "ks", "SVR")
+        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SG", "None", "ks", "Pls")
         print("The Pca RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
     
     else:
         data1, label1 = LoadNirtest('Cls')
-        acc = SpectralQualitativeAnalysis(data1, label1, "MSC", "Lars", "random", "RF")
-        print("The acc:{} of result!".format(acc))
+        acc = SpectralQualitativeAnalysis(data1, label1, "SG", "None", "random", "SVM")
+        print("The model  acc:{} of result!".format(acc))
 

@@ -186,8 +186,8 @@ def LoadNirtest(type):
             Nirdata = np.concatenate((Cdata1, Tdata1))
             
             pd.DataFrame(Nirdata).to_csv('Nirdata.csv', index=False)
-            data = Nirdata[:, :-1]
-            label = Nirdata[:, -1]
+            data = Nirdata[:, :-4]
+            label = Nirdata[:, -3:-1]
             # np.savetxt('data.txt', data)
             # np.savetxt('label.txt', label)   
 
@@ -210,10 +210,12 @@ def LoadNirtest(type):
             label = Nirdata[:, -3:-1]
     elif type == "Cls":
         nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-        path =  nowpath+'//Data//Cls//table.csv'
+        # path =  nowpath+'//Data//Cls//table.csv'
+        path =  nowpath+'//Data//Cls//output_typed.csv'
+
         Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
         data = Nirdata[:, :-1]
-        label = Nirdata[:, -2]
+        label = Nirdata[:, -1]
 
     return data, label
 

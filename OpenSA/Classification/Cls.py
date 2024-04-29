@@ -12,6 +12,7 @@
 import joblib
 import sklearn
 from sklearn.metrics import accuracy_score,auc,roc_curve,precision_recall_curve,f1_score
+from lazypredict.Supervised import LazyClassifier
 
 # from sklearn.base import accuracy_score
 # from sklearn.base import accuracy_score
@@ -40,6 +41,15 @@ def  QualitativeAnalysis(model, X_train, X_test, y_train, y_test) -> float:
         acc = CNN(X_train, X_test, y_train, y_test, 16, 160, 4)
     elif model == "SAE":
         acc = SAE(X_train, X_test, y_train, y_test)
+    elif model =="Lazy":
+        acc = 1
+        clf = LazyClassifier(verbose=0,ignore_warnings=True, custom_metric=None)
+        models = clf.fit(X_train, X_test, y_train, y_test)
+        # acc = accuracy_score(y_test, y_pred)
+        # y_pred = models.predict(X_test)
+        # acc = accuracy_score(y_test, y_pred)
+        print(models)
+
     else:
         print("no this model of QuantitativeAnalysis")
 

@@ -5,6 +5,7 @@ import pickle
 import joblib
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.multioutput import MultiOutputRegressor
 from sklearn.neural_network import MLPRegressor
 # import hpelm
 
@@ -174,24 +175,29 @@ def Lazy( X_train, X_test, y_train, y_test):
     # Print the models
     print(models)
     
-    best_model = models.iloc[0]
-    print("----------------------------------------")
-    print(best_model)
-    print("----------------------------------------")
-    print(predictions)
+    # best_model = models.iloc[0]
+    # print("----------------------------------------")
+    # print(best_model)
+    # print("----------------------------------------")
+    # print(predictions)
     return None, None, None  # 或者根据你的需要进行处理
 
 def Svregression(X_train, X_test, y_train, y_test):
 
 
     model = SVR(C=2, gamma=1e-07, kernel='linear')
+    # model.fit(X_train, y_train)
+    # 创建多输出回归器
+    model = MultiOutputRegressor(model)
+    # 拟合模型
     model.fit(X_train, y_train)
 
     # predict the values
     y_pred = model.predict(X_test)
-    Rmse, R2, Mae = ModelRgsevaluate(y_pred, y_test)
-
-    return Rmse, R2, Mae
+    # Rmse, R2, Mae = ModelRgsevaluate(y_pred, y_test)
+    # 评估模型
+    mse = mean_squared_error(y_test, y_pred)
+    return mse, 0, 0
 
 def Anngression(X_train, X_test, y_train, y_test):
 
