@@ -14,6 +14,8 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from copy import deepcopy
 import pandas as pd
+
+from airpls import airPLS_deBase
 #import pywt
 
 # ref1: 湖南示范大学同学实列，并做了部分修改
@@ -222,6 +224,10 @@ def Preprocessing(method, data):
         data = DT(data)
     elif method == 'WVAE':
         data = wave(data)
+    elif method == 'AirPls':
+        for i in range(data.shape[0]):
+            data[i] = airPLS_deBase(data[i])
+        print("主数据已经过AirPls预处理")
     else:
         print("no this method of preprocessing!")
 

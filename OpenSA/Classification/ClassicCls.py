@@ -11,6 +11,9 @@
 
 
 import joblib
+from matplotlib import pyplot as plt
+from pyparsing import nums
+from sklearn.decomposition import PCA
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
@@ -20,6 +23,8 @@ from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestClassifier
 import pandas  as pd
 import pickle
+
+from airpls import airPLS_deBase
 
 # from OpenSA.Classification.DataLoad import LoadNirtest
 
@@ -51,55 +56,79 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     predict_results=clf.predict(X_test)
     acc = accuracy_score(predict_results, y_test.ravel())
 
-
-    loaded_label_map = joblib.load('label_map.pkl')
-
-
     nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-    path =  nowpath+'//new_test_output.csv'
-
+    path =  nowpath+'//Data//Cls//cool_test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-    
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = clf.predict(x_newTest)
-    print(y_new_pred)
-    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
-    print(y_pred_str)
+    y_newTest = Nirdata[:, -1]
 
-  
-    print(x_newTest.shape)
+
+    min_value = np.min(x_newTest)  
+    max_value = np.max(x_newTest)  
+    # global minmaxFlag
+    global airplsFlag
+    if(1):#关闭airpls
+        for i in range(x_newTest.shape[0]):
+            x_newTest[i] = airPLS_deBase(x_newTest[i])
+        print("测试集数据airpls已处理")
+    
+    if(1):
+    # 对整个数据集进行归一化  
+        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+        x_newTest = normalized_data
+
+
+   
+
+
+
+
+    # y_new_pred = clf.predict(x_newTest)
+    # print("预测值：",y_new_pred)
+    # print("真实值：",y_newTest)
+    # newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    # print("预测集的效果为：",newacc)
 
    
     return acc
 
 def SVM(X_train, X_test, y_train, y_test):
 
-    clf = svm.SVC(C=1, gamma=1e-3)
+    clf = svm.SVC(C=2, gamma=1e-3)
     clf.fit(X_train, y_train)
 
     predict_results = clf.predict(X_test)
+    print("x:",X_test.shape)
     acc = accuracy_score(predict_results, y_test.ravel())
 
 
-    label_map = {
-        0: 'buluofen',
-        1: 'duiyixiananjifen',
-        2: 'fufangduiyixiananjifen',
-        3: 'junmeishu',
-        4: 'malaisuanlvnaming'
-    }
-    joblib.dump(label_map, 'label_map.pkl')
-    loaded_label_map = joblib.load('label_map.pkl')
     nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-    path =  nowpath+'//new_test_output.csv'
+    path =  nowpath+'//Data//Cls//test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = clf.predict(x_newTest)
-    print(y_new_pred)
-    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
-    print(y_pred_str)
+    y_newTest = Nirdata[:, -1]
 
-    print(x_newTest.shape)
+    if(1):#关闭airpls
+        for i in range(x_newTest.shape[0]):
+            x_newTest[i] = airPLS_deBase(x_newTest[i])
+
+        
+    if(1):
+        min_value = np.min(x_newTest)  
+        max_value = np.max(x_newTest)  
+        
+        # 对整个数据集进行归一化  
+        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+        x_newTest = normalized_data
+
+
+
+
+
+    y_new_pred = clf.predict(x_newTest)
+    print("预测值和真实值：",y_new_pred,y_newTest)
+    newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    print("预测集的效果为：",newacc)
 
 
     return acc
@@ -115,35 +144,35 @@ def PLS_DA(X_train, X_test, y_train, y_test):
     # 将预测结果（类别矩阵）转换为数值标签
     y_pred = np.array([np.argmax(i) for i in y_pred])
     acc = accuracy_score(y_test, y_pred)
+    print("预测值和真实值：")
+    print(y_test, y_pred)
 
-
-    label_map = {
-        0: 'buluofen',
-        1: 'duiyixiananjifen',
-        2: 'fufangduiyixiananjifen',
-        3: 'junmeishu',
-        4: 'malaisuanlvnaming'
-    }
-    joblib.dump(model, 'model.pkl')
-    joblib.dump(label_map, 'label_map.pkl')
-
-    # 加载模型和标签映射
-    loaded_model = joblib.load('model.pkl')
-    loaded_label_map = joblib.load('label_map.pkl')
-
-
-    nowpath    = 'F://github//graduate-code//OpenSA' 
-    path =  nowpath+'//new_test.csv'
-
+    nowpath    = 'F://github//graduate-code//OpenSA//OpenSA//Data//Cls' 
+    path =  nowpath+'//test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-    
+    print("Nirdata.shape: ",Nirdata.shape)
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = loaded_model.predict(x_newTest)
-    print(x_newTest)
-    print(y_new_pred)
-    y_pred_str = [loaded_label_map[labelS] for labelS in y_new_pred]
-    # print(y_pred_str)
-    # print(x_newTest.shape)
+    y_newTest = Nirdata[:,-1]
+
+    if(1):#    
+        for i in range(x_newTest.shape[0]):
+            x_newTest[i] = airPLS_deBase(x_newTest[i])
+        print("对测试集已经做出了airpls")
+    if(1):
+        min_value = np.min(x_newTest)  
+        max_value = np.max(x_newTest)  
+        
+        # 对整个数据集进行归一化  
+        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+        x_newTest = normalized_data
+
+
+    x_newTest = x_newTest[-6:-1]
+    y_newTest = Nirdata[-6:-1,-1]
+    y_new_pred = model.predict(x_newTest)
+    y_new_pred = np.array([np.argmax(i) for i in y_pred])
+    print("预测值和真实值：",y_new_pred,y_newTest)
+  
 
 
 
@@ -151,40 +180,43 @@ def PLS_DA(X_train, X_test, y_train, y_test):
 
 def RF(X_train, X_test, y_train, y_test):
 
-    RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
+    # RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
+    RF = RandomForestClassifier(n_estimators=500)
     RF.fit(X_train, y_train)
 
-    y_pred = RF.predict(X_test)    
+    y_pred = RF.predict(X_test)   
+    # print("真实值和预测值：",y_test, y_pred) 
     acc = accuracy_score(y_test, y_pred)
  
 
-    label_map = {
-        0: 'buluofen',
-        1: 'duiyixiananjifen',
-        2: 'fufangduiyixiananjifen',
-        3: 'junmeishu',
-        4: 'malaisuanlvnaming'
-    }
-    # joblib.dump(RF, 'model.pkl')
-    joblib.dump(label_map, 'label_map.pkl')
-
-    # 加载模型和标签映射
-    # loaded_model = joblib.load('model.pkl')
-    loaded_label_map = joblib.load('label_map.pkl')
-
-
     nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-    path =  nowpath+'//new_test_output.csv'
-
+    path =  nowpath+'//Data//Cls//test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-    
     x_newTest = Nirdata[:, :-1]
-    y_new_pred = RF.predict(x_newTest)
-    print(y_new_pred)
-    y_pred_str = [loaded_label_map[label] for label in y_new_pred]
-    print(y_pred_str)
+    y_newTest = Nirdata[:, -1]
 
-  
-    print(x_newTest.shape)
+
+    if(1):#    
+        for i in range(x_newTest.shape[0]):
+            x_newTest[i] = airPLS_deBase(x_newTest[i])
+        print("对测试集已经做出了airpls")
+    if(1):
+        min_value = np.min(x_newTest)  
+        max_value = np.max(x_newTest)  
+        
+        # 对整个数据集进行归一化  
+        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+        x_newTest = normalized_data
+
+
+
+
+
+
+    # y_new_pred = RF.predict(x_newTest)
+    # print("预测值和真实值：",y_new_pred,y_newTest)
+    # newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    # print("预测集的效果为：",newacc)
+ 
 
     return acc

@@ -78,7 +78,7 @@ class SPA:
             for i in range(N):
                 # 从测试集中 去除掉第 i 项
                 cal = np.hstack([np.arange(i), np.arange(i + 1, N)])
-                X = Xcal[cal, :][:, var_sel.astype(np.int)]
+                X = Xcal[cal, :][:, var_sel.astype(np.int64)]
                 y = ycal[cal]
                 xtest = Xcal[i, var_sel]
                 # ytest = ycal[i]
@@ -149,7 +149,7 @@ class SPA:
         # with Bar('Evaluation of variable subsets :', max=(K) * (m_max - m_min + 1)) as bar:
         for k in range(K):
             for m in range(m_min, m_max + 1):
-                var_sel = SEL[:m, k].astype(np.int)
+                var_sel = SEL[:m, k].astype(np.int64)
                 _, e = self._validation(Xcal, ycal, var_sel, Xval, yval)
                 PRESS[m, k] = np.conj(e).T.dot(e)
 
@@ -160,7 +160,7 @@ class SPA:
         k_sel = np.argmin(PRESSmin)
 
         # 第 k_sel波段为初始波段时最佳，波段数目为 m_sel（k_sel）
-        var_sel_phase2 = SEL[:m_sel[k_sel], k_sel].astype(np.int)
+        var_sel_phase2 = SEL[:m_sel[k_sel], k_sel].astype(np.int64)
 
         # 最后消去变量
 

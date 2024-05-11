@@ -22,7 +22,7 @@ from sklearn.neural_network import MLPRegressor
 
 from sklearn.svm import SVR
 from Evaluate.RgsEvaluate import ModelRgsevaluate
-from lazypredict.Supervised import LazyRegressor
+# from lazypredict.Supervised import LazyRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LassoLarsCV
 from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error

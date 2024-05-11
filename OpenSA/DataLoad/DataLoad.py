@@ -11,12 +11,13 @@
 
 
 
+from matplotlib import pyplot as plt
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import numpy as np
 
 #随机划分数据集
-def random(data, label, test_ratio=0.2, random_state=123):
+def random(data, label, test_ratio=0.8, random_state=123):
     """
     :param data: shape (n_samples, n_features)
     :param label: shape (n_sample, )
@@ -170,13 +171,9 @@ def LoadNirtest(type):
     if type == "Rgs":
         if(mode != 'default'):
 
-            # CDataPath3 = './/Data//Rgs//Cdata1.csv'
-            # VDataPath3 = './/Data//Rgs//Vdata1.csv'
-            # TDataPath3 = './/Data//Rgs//Tdata1.csv'
+
             nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-            # CDataPath3 = nowpath+'.//Data//Rgs//Cdata1.csv'
-            # VDataPath3 = nowpath+'.//Data//Rgs//Vdata1.csv'
-            # TDataPath3 = nowpath+'.//Data//Rgs//Tdata1.csv'
+ 
             CDataPath3 = nowpath+'//Data//Rgs//C3.csv'
             # VDataPath3 = nowpath+'//Data//Rgs//V3.csv'
             TDataPath3 = nowpath+'//Data//Rgs//T3.csv'
@@ -187,12 +184,7 @@ def LoadNirtest(type):
             
             pd.DataFrame(Nirdata).to_csv('Nirdata.csv', index=False)
             data = Nirdata[:, :-4]
-            label = Nirdata[:, -3:-1]
-            # np.savetxt('data.txt', data)
-            # np.savetxt('label.txt', label)   
-
-            # pd.DataFrame(data).to_csv('data.csv', index=False)
-            # pd.DataFrame(label).to_csv('label.csv', index=False)
+            label = Nirdata[:, -1]
    
         elif(mode == 'default'):
             CDataPath1 = './/Data//Rgs//Cdata1.csv'
@@ -209,10 +201,8 @@ def LoadNirtest(type):
             data = Nirdata[:, :-4]
             label = Nirdata[:, -3:-1]
     elif type == "Cls":
-        nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-        # path =  nowpath+'//Data//Cls//table.csv'
-        path =  nowpath+'//Data//Cls//output_typed.csv'
-
+        nowpath = 'F://github//graduate-code//OpenSA//OpenSA' 
+        path =  nowpath+'//Data//Cls//classtable.csv'
         Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
         data = Nirdata[:, :-1]
         label = Nirdata[:, -1]

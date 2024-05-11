@@ -14,7 +14,7 @@ import numpy as np
 import sklearn
 from sklearn.calibration import LinearSVC
 from sklearn.metrics import accuracy_score,auc,roc_curve,precision_recall_curve,f1_score
-from lazypredict.Supervised import LazyClassifier
+# from lazypredict.Supervised import LazyClassifier
 
 # from sklearn.base import accuracy_score
 # from sklearn.base import accuracy_score

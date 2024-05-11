@@ -11,6 +11,7 @@
 
 
 from time import sleep
+from matplotlib import colors
 import numpy as np
 from sklearn.model_selection import train_test_split
 from DataLoad.DataLoad import SetSplit, LoadNirtest
@@ -22,11 +23,11 @@ from Simcalculation.SimCa import Simcalculation
 from Clustering.Cluster import Cluster
 from Regression.Rgs import QuantitativeAnalysis
 from Classification.Cls import QualitativeAnalysis
-from lazypredict.Supervised import LazyClassifier
-from lazypredict.Supervised import LazyRegressor
+# from lazypredict.Supervised import LazyClassifier
+# from lazypredict.Supervised import LazyRegressor
 import airpls
 import matplotlib.pyplot as plt#导入强大的绘图库
-
+ 
 #光谱聚类分析
 def SpectralClusterAnalysis(data, label, ProcessMethods, FslecetedMethods, ClusterMethods):
     """
@@ -92,49 +93,79 @@ def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, S
     :param model : string, 定性分析模型, 包括ANN、PLS_DA、SVM、RF、CNN、SAE等，后续会不断补充完整
     :return: acc： float, 分类准确率
     """
-
     ProcesedData = Preprocessing(ProcessMethods, data)
     FeatrueData, labels = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
-    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.2, randomseed=123)
+    print( "波段选择成功：")
+
+
+    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.1, randomseed=123)
+ 
     acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test )
-    # model.save('model_savedmodel', save_format='tf')  
     
     return acc
 
 
 
 
-
-
-
-
+ 
 
 if __name__ == '__main__':
-
-    # ## 载入原始数据并可视化
-    # data1, label1 = LoadNirtest('Cls')
-    # #plotspc(data1, "raw specturm")
-    # # 光谱定性分析演示
-    # # 示意1: 预处理算法:MSC , 波长筛选算法: 不使用, 全波长建模, 数据集划分:随机划分, 定性分析模型: RF
-    # acc = SpectralQualitativeAnalysis(data1, label1, "MSC", "Lars", "random", "PLS_DA")
-    # print("The acc:{} of result!".format(acc))
     mode ="dingxing"
     if(mode=="dingliang"):
-    ## 载入原始数据并可视化
-    # 光谱定量分析演示
-    # 示意1: 预处理算法:MSC , 波长筛选算法: Uve, 数据集划分:KS, 定性分量模型: SVR
         data2, label2 = LoadNirtest('Rgs')
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")  
-        print(data2.shape)
-        print("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
-        print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-        print(label2.shape) 
-        print("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
-        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SG", "None", "ks", "Pls")
+        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SNV", "Lars", "ks", "Pls")
         print("The Pca RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
     
     else:
         data1, label1 = LoadNirtest('Cls')
-        acc = SpectralQualitativeAnalysis(data1, label1, "SNV", "None", "random", "Lazy")
-        print("The model  acc:{} of result!".format(acc))
+
+    # list_of_lists =  []
+    # for i in range(len(data1)):
+    #     if(i==0):
+    #         list_of_lists.append(data1[i])
+    #     elif(label1[i]!=label1[i-1]):
+    #         list_of_lists.append(data1[i])
+    # colors = ['r', 'g', 'b','y']  # 使用不同的颜色
+    # labels = ['Origin 1', 'Origin 2', 'Imitation 1:WeFuiry','Imitation 2:EastNorth']  # 每个数据集的标签
+    # for sublist, color, label in zip(list_of_lists, colors, labels):
+    #     plt.plot(sublist, color=color, label=label)
+
+    # plt.legend()
+    # plt.show()
+
+
+    for i in range(data1.shape[0]):
+            data1[i] = airpls.airPLS_deBase(data1[i])
+    print("-----------去基线成功----------------")
+
+            # 计算最大值和最小值  
+    min_value = np.min(data1)  
+    max_value = np.max(data1)  
+        
+    # 对整个数据集进行归一化  
+    normalized_data = (data1 - min_value) / (max_value - min_value)  
+    data1 = normalized_data
+
+
+    
+    # list_of_lists =  []
+    # for i in range(len(data1)):
+    #     if(i==0):
+    #         list_of_lists.append(data1[i])
+    #     elif(label1[i]!=label1[i-1]):
+    #         list_of_lists.append(data1[i])
+    # colors = ['r', 'g', 'b','y']  # 使用不同的颜色
+    # labels = ['Origin 1', 'Origin 2', 'Imitation 1:WeFuiry','Imitation 2:EastNorth']  # 每个数据集的标签
+    # for sublist, color, label in zip(list_of_lists, colors, labels):
+    #     plt.plot(sublist, color=color, label=label)
+
+    # plt.legend()
+    # plt.show()
+
+
+
+
+
+    acc = SpectralQualitativeAnalysis(data1, label1, "None", "GA", "ks", "RF")
+    print("The model  acc:{} of result!".format(acc))
 

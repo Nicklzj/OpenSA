@@ -9,6 +9,7 @@
 
 """
 
+from time import sleep
 from WaveSelect.Lar import Lar
 from WaveSelect.Spa import SPA
 from WaveSelect.Uve import UVE
@@ -46,7 +47,10 @@ def SpctrumFeatureSelcet(method, X, y):
         X_Feature = X[:, Featuresecletidx]
     elif method == "GA":
         Featuresecletidx = GA(X, y, 10)
+        print("遗传算法选出的特征点：",Featuresecletidx)
+        sleep(5)
         X_Feature = X[:, Featuresecletidx]
+        
     elif method == "Pca":
         X_Feature = Pca(X)
     else:
