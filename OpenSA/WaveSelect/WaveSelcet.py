@@ -9,6 +9,7 @@
 
 """
 
+import os
 from time import sleep
 from WaveSelect.Lar import Lar
 from WaveSelect.Spa import SPA
@@ -26,6 +27,7 @@ def SpctrumFeatureSelcet(method, X, y):
        :return: X_Feature： 波长筛选/降维后的数据, shape (n_samples, n_features)
                 y：光谱数据对应的标签, (n_samples，)
     """
+    Featuresecletidx=[]
     if method == "None":
         X_Feature = X
     elif method== "Cars":
@@ -46,9 +48,23 @@ def SpctrumFeatureSelcet(method, X, y):
             Xcal= Xcal, ycal=ycal, m_min=8, m_max=50, Xval=Xval, yval=yval, autoscaling=1)
         X_Feature = X[:, Featuresecletidx]
     elif method == "GA":
-        Featuresecletidx = GA(X, y, 10)
-        print("遗传算法选出的特征点：",Featuresecletidx)
-        sleep(5)
+        file_path = "my_featurelist.txt"
+        if os.path.exists(file_path):
+            # 如果文件存在，则读取每一行的内容到列表中
+            with open(file_path, "r") as file:
+                feature_list = file.readlines()
+                # 去除每一行末尾的换行符
+                feature_list = [int(line.strip()) for line in feature_list]
+            print("文件存在，内容已读取到列表中。")
+            print("列表内容:", feature_list)
+            Featuresecletidx = feature_list
+        else:
+            Featuresecletidx = GA(X, y, 10)
+            print("遗传算法选出的特征点：",Featuresecletidx)
+            with open('my_featurelist.txt', 'w') as f:
+                for item in Featuresecletidx:
+                    f.write(str(item) + '\n')
+            # sleep(5)
         X_Feature = X[:, Featuresecletidx]
         
     elif method == "Pca":
@@ -56,4 +72,4 @@ def SpctrumFeatureSelcet(method, X, y):
     else:
         print("no this method of SpctrumFeatureSelcet!")
 
-    return X_Feature, y
+    return X_Feature, y,Featuresecletidx

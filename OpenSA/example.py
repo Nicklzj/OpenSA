@@ -82,7 +82,7 @@ def SpectralQuantitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, 
     return Rmse, R2, Mae
 
 # 光谱定性分析
-def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, SetSplitMethods, model):
+def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, SetSplitMethods, model,Featuresecletidx):
 
     """
     :param data: shape (n_samples, n_features), 光谱数据
@@ -94,13 +94,13 @@ def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, S
     :return: acc： float, 分类准确率
     """
     ProcesedData = Preprocessing(ProcessMethods, data)
-    FeatrueData, labels = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
-    print( "波段选择成功：")
+    FeatrueData, labels,Featuresecletidx = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
+    print( "波段选择成功,特征数据的形状为：",FeatrueData.shape)
 
 
-    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.1, randomseed=123)
+    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.15, randomseed=100)
  
-    acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test )
+    acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test,Featuresecletidx )
     
     return acc
 
@@ -113,31 +113,15 @@ if __name__ == '__main__':
     mode ="dingxing"
     if(mode=="dingliang"):
         data2, label2 = LoadNirtest('Rgs')
-        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SNV", "Lars", "ks", "Pls")
+        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SNV", "Uve", "ks", "Pls")
         print("The Pca RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
     
     else:
         data1, label1 = LoadNirtest('Cls')
 
-    # list_of_lists =  []
-    # for i in range(len(data1)):
-    #     if(i==0):
-    #         list_of_lists.append(data1[i])
-    #     elif(label1[i]!=label1[i-1]):
-    #         list_of_lists.append(data1[i])
-    # colors = ['r', 'g', 'b','y']  # 使用不同的颜色
-    # labels = ['Origin 1', 'Origin 2', 'Imitation 1:WeFuiry','Imitation 2:EastNorth']  # 每个数据集的标签
-    # for sublist, color, label in zip(list_of_lists, colors, labels):
-    #     plt.plot(sublist, color=color, label=label)
-
-    # plt.legend()
-    # plt.show()
-
-
     for i in range(data1.shape[0]):
             data1[i] = airpls.airPLS_deBase(data1[i])
     print("-----------去基线成功----------------")
-
             # 计算最大值和最小值  
     min_value = np.min(data1)  
     max_value = np.max(data1)  
@@ -146,26 +130,6 @@ if __name__ == '__main__':
     normalized_data = (data1 - min_value) / (max_value - min_value)  
     data1 = normalized_data
 
-
-    
-    # list_of_lists =  []
-    # for i in range(len(data1)):
-    #     if(i==0):
-    #         list_of_lists.append(data1[i])
-    #     elif(label1[i]!=label1[i-1]):
-    #         list_of_lists.append(data1[i])
-    # colors = ['r', 'g', 'b','y']  # 使用不同的颜色
-    # labels = ['Origin 1', 'Origin 2', 'Imitation 1:WeFuiry','Imitation 2:EastNorth']  # 每个数据集的标签
-    # for sublist, color, label in zip(list_of_lists, colors, labels):
-    #     plt.plot(sublist, color=color, label=label)
-
-    # plt.legend()
-    # plt.show()
-
-
-
-
-
-    acc = SpectralQualitativeAnalysis(data1, label1, "None", "GA", "ks", "RF")
+    acc = SpectralQualitativeAnalysis(data1, label1, "None", "None", "ks", "RF",[])
     print("The model  acc:{} of result!".format(acc))
 

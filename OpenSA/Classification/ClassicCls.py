@@ -29,7 +29,7 @@ from airpls import airPLS_deBase
 # from OpenSA.Classification.DataLoad import LoadNirtest
 
  
-def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
+def ANN(X_train, X_test, y_train, y_test, Featuresecletidx,StandScaler=None):
 
     if StandScaler:
         scaler = StandardScaler() # 标准化转换
@@ -55,9 +55,15 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     clf.fit(X_train,y_train.ravel())
     predict_results=clf.predict(X_test)
     acc = accuracy_score(predict_results, y_test.ravel())
+    print("训练预测值：",predict_results)
+    print("训练真实值：",y_test)
+ 
+
+
+
 
     nowpath    = 'F://github//graduate-code//OpenSA//OpenSA' 
-    path =  nowpath+'//Data//Cls//cool_test_output.csv'
+    path =  nowpath+'//Data//Cls//test_output.csv'
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
     x_newTest = Nirdata[:, :-1]
     y_newTest = Nirdata[:, -1]
@@ -79,20 +85,24 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
 
 
    
+    if(len(Featuresecletidx)!=0 ):
+        print(Featuresecletidx)
+        x_newTest = x_newTest[:,Featuresecletidx]
+        print("不喜欢，",x_newTest.shape)    
 
 
 
 
-    # y_new_pred = clf.predict(x_newTest)
-    # print("预测值：",y_new_pred)
-    # print("真实值：",y_newTest)
-    # newacc = accuracy_score(y_new_pred, y_newTest.ravel())
-    # print("预测集的效果为：",newacc)
+    y_new_pred = clf.predict(x_newTest)
+    print("预测值：",y_new_pred)
+    print("真实值：",y_newTest)
+    newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    print("预测集的效果为：",newacc)
 
    
     return acc
 
-def SVM(X_train, X_test, y_train, y_test):
+def SVM(X_train, X_test, y_train, y_test,Featuresecletidx):
 
     clf = svm.SVC(C=2, gamma=1e-3)
     clf.fit(X_train, y_train)
@@ -123,7 +133,10 @@ def SVM(X_train, X_test, y_train, y_test):
 
 
 
-
+    if(len(Featuresecletidx)!=0 ):
+        print(Featuresecletidx)
+        x_newTest = x_newTest[:,Featuresecletidx]
+        print("不喜欢，",x_newTest.shape)    
 
     y_new_pred = clf.predict(x_newTest)
     print("预测值和真实值：",y_new_pred,y_newTest)
@@ -147,38 +160,38 @@ def PLS_DA(X_train, X_test, y_train, y_test):
     print("预测值和真实值：")
     print(y_test, y_pred)
 
-    nowpath    = 'F://github//graduate-code//OpenSA//OpenSA//Data//Cls' 
-    path =  nowpath+'//test_output.csv'
-    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-    print("Nirdata.shape: ",Nirdata.shape)
-    x_newTest = Nirdata[:, :-1]
-    y_newTest = Nirdata[:,-1]
+    # nowpath    = 'F://github//graduate-code//OpenSA//OpenSA//Data//Cls' 
+    # path =  nowpath+'//test_output.csv'
+    # Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    # print("Nirdata.shape: ",Nirdata.shape)
+    # x_newTest = Nirdata[:, :-1]
+    # y_newTest = Nirdata[:,-1]
 
-    if(1):#    
-        for i in range(x_newTest.shape[0]):
-            x_newTest[i] = airPLS_deBase(x_newTest[i])
-        print("对测试集已经做出了airpls")
-    if(1):
-        min_value = np.min(x_newTest)  
-        max_value = np.max(x_newTest)  
+    # if(1):#    
+    #     for i in range(x_newTest.shape[0]):
+    #         x_newTest[i] = airPLS_deBase(x_newTest[i])
+    #     print("对测试集已经做出了airpls")
+    # if(1):
+    #     min_value = np.min(x_newTest)  
+    #     max_value = np.max(x_newTest)  
         
-        # 对整个数据集进行归一化  
-        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
-        x_newTest = normalized_data
+    #     # 对整个数据集进行归一化  
+    #     normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+    #     x_newTest = normalized_data
 
 
-    x_newTest = x_newTest[-6:-1]
-    y_newTest = Nirdata[-6:-1,-1]
-    y_new_pred = model.predict(x_newTest)
-    y_new_pred = np.array([np.argmax(i) for i in y_pred])
-    print("预测值和真实值：",y_new_pred,y_newTest)
+    # x_newTest = x_newTest[-6:-1]
+    # y_newTest = Nirdata[-6:-1,-1]
+    # y_new_pred = model.predict(x_newTest)
+    # y_new_pred = np.array([np.argmax(i) for i in y_pred])
+    # print("预测值和真实值：",y_new_pred,y_newTest)
   
 
 
 
     return acc
 
-def RF(X_train, X_test, y_train, y_test):
+def RF(X_train, X_test, y_train, y_test,Featuresecletidx):
 
     # RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
     RF = RandomForestClassifier(n_estimators=500)
@@ -194,29 +207,27 @@ def RF(X_train, X_test, y_train, y_test):
     Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
     x_newTest = Nirdata[:, :-1]
     y_newTest = Nirdata[:, -1]
-
-
     if(1):#    
         for i in range(x_newTest.shape[0]):
             x_newTest[i] = airPLS_deBase(x_newTest[i])
         print("对测试集已经做出了airpls")
     if(1):
         min_value = np.min(x_newTest)  
-        max_value = np.max(x_newTest)  
-        
+        max_value = np.max(x_newTest)    
         # 对整个数据集进行归一化  
         normalized_data = (x_newTest - min_value) / (max_value - min_value)  
         x_newTest = normalized_data
+    if(len(Featuresecletidx)!=0 ):
+        print(Featuresecletidx)      
+        x_newTest = x_newTest[:,Featuresecletidx]
+    print("不喜欢，",x_newTest.shape)
+    y_new_pred = RF.predict(x_newTest)
+    print("预测值和真实值：",y_new_pred,y_newTest)
+    newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    print("预测集的效果为：",newacc)
 
-
-
-
-
-
-    # y_new_pred = RF.predict(x_newTest)
-    # print("预测值和真实值：",y_new_pred,y_newTest)
-    # newacc = accuracy_score(y_new_pred, y_newTest.ravel())
-    # print("预测集的效果为：",newacc)
- 
-
+    for elem in enumerate(y_new_pred):
+        if(elem[1] ==0):
+            print(elem)
+        # print(elem)
     return acc
