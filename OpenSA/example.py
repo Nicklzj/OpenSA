@@ -8,9 +8,27 @@
     @License：Apache-2.0 license
 
 """
+import argparse
+parser = argparse.ArgumentParser(description='Your Description Here')
+
+# 添加参数选项
+parser.add_argument('--processMethods', type=str, default='None',
+                    help='Description of processMethods option.')
+parser.add_argument('--fslectedMethods', type=str, default='None',
+                    help='Description of fslectedMethods option.')
+parser.add_argument('--setSplitMethods', type=str, default='None',
+                    help='Description of setSplitMethods option.')
+parser.add_argument('--model', type=str, default='ANN',
+                    help='Description of model option.')
+parser.add_argument('--filename', type=str, default='None',
+                        help='Description of model option.')
+
+
+    # 解析命令行参数
 
 
 import numpy as np
+from sklearn.model_selection import train_test_split
 from DataLoad.DataLoad import SetSplit, LoadNirtest
 from Preprocessing.Preprocessing import Preprocessing
 from WaveSelect.WaveSelcet import SpctrumFeatureSelcet
@@ -20,6 +38,10 @@ from Simcalculation.SimCa import Simcalculation
 from Clustering.Cluster import Cluster
 from Regression.Rgs import QuantitativeAnalysis
 from Classification.Cls import QualitativeAnalysis
+# from lazypredict.Supervised import LazyClassifier
+# from lazypredict.Supervised import LazyRegressor
+from airpls import airPLS_deBase
+
 
 #光谱聚类分析
 def SpectralClusterAnalysis(data, label, ProcessMethods, FslecetedMethods, ClusterMethods):
@@ -55,7 +77,15 @@ def SpectralQuantitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, 
     ProcesedData = Preprocessing(ProcessMethods, data)
     FeatrueData, labels = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
     X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.2, randomseed=123)
+
+    # reg = LazyRegressor(ignore_warnings=False, custom_metric=None)
+    # models, predictions = reg.fit(X_train, X_test, y_train, y_test)
+    # print(models)
+    # best_model = models.iloc[0]
+
     Rmse, R2, Mae = QuantitativeAnalysis(model, X_train, X_test, y_train, y_test )
+    
+    # model.save('model_savedmodel', save_format='tf')  
     return Rmse, R2, Mae
 
 # 光谱定性分析
@@ -75,7 +105,8 @@ def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, S
     FeatrueData, labels = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
     X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.2, randomseed=123)
     acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test )
-
+    # model.save('model_savedmodel', save_format='tf')  
+    
     return acc
 
 
@@ -98,28 +129,29 @@ if __name__ == '__main__':
 
 
     ## 载入原始数据并可视化
-    data2, label2 = LoadNirtest('Rgs')
-    #plotspc(data2, "raw specturm")
-    # 光谱定量分析演示
-    # 示意1: 预处理算法:MSC , 波长筛选算法: Uve, 数据集划分:KS, 定性分量模型: SVR
-    RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "None", "None", "random", "CNN")
-    print("The RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
+    # data2, label2 = LoadNirtest('Rgs')
+    data2, label2 = LoadNirtest('Cls')
 
+    args = parser.parse_args()
 
+    # 打印解析结果
+    print("processMethods:", args.processMethods)
+    print("fslectedMethods:", args.fslectedMethods)
+    print("setSplitMethods:", args.setSplitMethods)
+    print("model:", args.model)
+    #print("model:", args.filename)
+    for i in range(data2.shape[0]):
+        data2[i] = airPLS_deBase(data2[i])
+    print("-----------去基线成功----------------")
+            # 计算最大值和最小值  
+    min_value = np.min(data2)  
+    max_value = np.max(data2)         
+    # 对整个数据集进行归一化  
+    normalized_data = (data2 - min_value) / (max_value - min_value)  
+    data2 = normalized_data
 
-    # ## 光谱预处理并可视化
-    # method = "SNV"
-    # Preprocessingdata = Preprocessing(method, data)
-    # plotspc(Preprocessingdata, method)
-    # ## 波长特征筛选并可视化
-    # method = 'Uve'
-    # SpectruSelected, y = SpctrumFeatureSelcet(method, data, label)
-    # print("全光谱数据维度")
-    # print(len(data[0,:]))
-    # print("经过{}波长筛选后的数据维度".format(method))
-    # print(len(SpectruSelected[0, :]))
-    # # #划分数据集
-    # X_train, X_test, y_train, y_test = SetSplit('spxy', SpectruSelected, y, 0.2, 123)
+    acc = SpectralQualitativeAnalysis(data2, label2, "None", "None", "ks", "RF")
+    print("The model  acc:{} of result!".format(acc))
 
 
 

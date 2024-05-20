@@ -9,7 +9,10 @@
 
 """
 
+import os
+import pathlib
 
+import joblib
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import accuracy_score
@@ -18,6 +21,8 @@ import numpy as np
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.ensemble import RandomForestClassifier
 import pandas  as pd
+import pickle
+from airpls import airPLS_deBase
 
 def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
 
@@ -30,6 +35,10 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     # solver='lbfgs',  MLP的求解方法：L-BFGS 在小数据上表现较好，Adam 较为鲁棒，
     # SGD在参数调整较优时会有最佳表现（分类效果与迭代次数）,SGD标识随机梯度下降。
     #clf =  MLPClassifier(solver='adam', alpha=1e-5, hidden_layer_sizes=(8,8), random_state=1, activation='relu')
+
+    # clf =  MLPClassifier()
+    # joblib.dump(clf, 'data.pkl')#也可以使用文件对象
+
     clf =  MLPClassifier(activation='relu', alpha=1e-05, batch_size='auto', beta_1=0.9,
                   beta_2=0.999, early_stopping=False, epsilon=1e-08,
                   hidden_layer_sizes=(10, 8), learning_rate='constant',
@@ -42,6 +51,17 @@ def ANN(X_train, X_test, y_train, y_test, StandScaler=None):
     predict_results=clf.predict(X_test)
     acc = accuracy_score(predict_results, y_test.ravel())
 
+
+
+
+    #添加保存模型的代码
+ 
+    # print (clf2.predict(X[0:1]))
+    # joblib.dump(clf, 'data.pkl')#也可以使用文件对象
+    # clf = joblib.load('data.pkl') 
+    print("-------------------------\n")
+    print(clf)
+    print("-------------------------\n")
     return acc
 
 def SVM(X_train, X_test, y_train, y_test):
@@ -70,9 +90,43 @@ def PLS_DA(X_train, X_test, y_train, y_test):
 
 def RF(X_train, X_test, y_train, y_test):
 
-    RF = RandomForestClassifier(n_estimators=15,max_depth=3,min_samples_split=3,min_samples_leaf=3)
-    RF.fit(X_train, y_train)
-    y_pred = RF.predict(X_test)
-    acc = accuracy_score(y_test, y_pred)
+    model_filename = 'pso_random_forest_model.pkl'
 
+    # 检查模型文件是否存在
+    if os.path.exists(model_filename):
+        # 载入模型
+        with open(model_filename, 'rb') as file:
+            RF = pickle.load(file)
+        print("Model loaded from file.")
+    else:
+        RF = RandomForestClassifier(n_estimators=500)
+        RF.fit(X_train, y_train)
+        with open('pso_random_forest_model.pkl', 'wb') as file:
+            pickle.dump(RF, file)
+    y_pred = RF.predict(X_test)   
+    # print("真实值和预测值：",y_test, y_pred) 
+    acc = accuracy_score(y_test, y_pred)
+    path =   './/Data//Cls//test_output.csv'
+    Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+    x_newTest = Nirdata[:, :-1]
+    y_newTest = Nirdata[:, -1]
+    if(1):#    
+        for i in range(x_newTest.shape[0]):
+            x_newTest[i] = airPLS_deBase(x_newTest[i])
+        print("对测试集已经做出了airpls")
+    if(1):
+        min_value = np.min(x_newTest)  
+        max_value = np.max(x_newTest)    
+        # 对整个数据集进行归一化  
+        normalized_data = (x_newTest - min_value) / (max_value - min_value)  
+        x_newTest = normalized_data
+    # if(len(Featuresecletidx)!=0 ):
+    #     print(Featuresecletidx)      
+    #     x_newTest = x_newTest[:,Featuresecletidx]
+    y_new_pred = RF.predict(x_newTest)
+    print("预测值：",y_new_pred)
+    print("真实值：",y_newTest)
+    newacc = accuracy_score(y_new_pred, y_newTest.ravel())
+    print("预测集的效果为：",newacc)
+ 
     return acc
