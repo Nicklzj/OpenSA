@@ -38,11 +38,52 @@ import csv
 x_list = []
 y_list = []
 
-# 读取CSV文件
+
+
+import time
+
+class Timer:
+    def __init__(self):
+        self.start_time = None
+        self.end_time = None
+
+    def start(self):
+        """Start the timer."""
+        self.start_time = time.perf_counter()
+
+    def stop(self):
+        """Stop the timer and return the elapsed time in milliseconds."""
+        self.end_time = time.perf_counter()
+        elapsed_time = (self.end_time - self.start_time) * 1000  # Convert to milliseconds
+        return elapsed_time
+
+    def reset(self):
+        """Reset the timer."""
+        self.start_time = None
+        self.end_time = None
+
+
+
+
+timer = Timer()
+timer.start()
+
+
+
+
+
+
+
+
+
+
+# 读取CSV文件   encoding='unicode_escape'
 # file_path = 'liuweny.csv'  # 请将your_file.csv替换为你的CSV文件路径
 #filename = '/home/rock/liuweny.csv'
 print(args.filename)
+# with open(args.filename, mode='r', newline='') as csvfile:
 with open(args.filename, mode='r', newline='') as csvfile:
+
     csvreader = csv.reader((csvfile))
     
     # 逐行读取数据
@@ -116,6 +157,46 @@ print(f"Mean Squared Error: {mse}")
 print(f"Euclidean Distance: {euclidean_distance}")
 
  
+import numpy as np
+
+# 计算SID
+def SID(x,y):
+    # print(np.sum(x))
+    p = np.zeros_like(x,dtype=np.double)
+    q = np.zeros_like(y,dtype=np.double)
+    Sid = 0
+    z=0
+    for i in range(len(x)):
+        if(x[i]<=0 ):
+            x[i]=1e-7 
+        # p[i] = x[i]/np.sum(x)
+        # q[i] = y[i]/np.sum(y)
+        if(y[i]<=0 ):
+            y[i]=1e-7 
+        p[z] = x[z]/np.sum(x)
+        q[z] = y[z]/np.sum(y)
+        z=z+1
+        # print(p[i],q[i])
+    for j in range(len(p)):
+        print("in loop :",p[j],q[j])
+        Sid += p[j]*np.log10(p[j]/q[j])+q[j]*np.log10(q[j]/p[j])
+    print(Sid)
+    return Sid
+
+vv = SID(Comp1,Comp2)
+print("11SID的值为：",vv)
+
+
+# 计算SAM
+def SAM(x,y):
+    s = np.sum(np.dot(x,y))
+    t = np.sqrt(np.sum(x**2))*np.sqrt(np.sum(y**2))
+    th = np.arccos(s/t)
+    # print(s,t)
+    return th
+
+SAMValue = SAM(Comp1,Comp2)
+
 
 
 
@@ -171,10 +252,11 @@ if(y_new_pred[0]==0 and (pearson_corr<0.99 or cosine_similarity<0.99)):
 if(y_new_pred[0]==2 and (pearson_corr>=0.99 or cosine_similarity>=0.99)):
     y_new_pred[0]=0
 
-
+elapsed_time = timer.stop()
+print(f"Elapsed time: {elapsed_time:.3f} milliseconds")
 
 print("预测值：",beverages[y_new_pred[0]])
-if(y_new_pred[0]==0):
-    cosine_similarity=1
-os.system("python3 Show_box.py --drugname %s --indicators %f" % (beverages[y_new_pred[0]],cosine_similarity))
+# if(y_new_pred[0]==0):
+#     cosine_similarity=1
+os.system("python3 Show_box.py --drugname %s --indicators1 %f --indicators2 %f  --indicators3  %f --indicators4  %f" % (beverages[y_new_pred[0]],cosine_similarity,vv,SAMValue,elapsed_time/1000))
 
