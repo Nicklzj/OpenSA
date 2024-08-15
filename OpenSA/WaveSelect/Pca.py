@@ -12,7 +12,7 @@
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
 
-def Pca(X, nums=0.9):
+def Pca(X, nums=10):
     """
        :param X: raw spectrum data, shape (n_samples, n_features)
        :param nums: Number of principal components retained

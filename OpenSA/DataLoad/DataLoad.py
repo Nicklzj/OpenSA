@@ -167,7 +167,7 @@ def ks(data, label, test_size=0.2):
 
 # 分别使用一个回归、一个分类的公开数据集做为example
 def LoadNirtest(type):
-    mode = "default"
+    mode = "!default"
     if type == "Rgs":
         if(mode != 'default'):
 
@@ -201,12 +201,19 @@ def LoadNirtest(type):
             data = Nirdata[:, :-4]
             label = Nirdata[:, -3:-1]
     elif type == "Cls":
-        nowpath = 'F://github//graduate-code//OpenSA//OpenSA' 
-        path =  nowpath+'//Data//Cls//classtable.csv'
-        Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
-        data = Nirdata[:, :-1]
-        label = Nirdata[:, -1]
-
+        cur_mode="guoqiyao"
+        if(cur_mode=="fangzhiyao"):
+            nowpath = 'F://github//graduate-code//OpenSA//OpenSA' 
+            path =  nowpath+'//Data//Cls//classtable.csv'
+            Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            data = Nirdata[:, :-1]
+            label = Nirdata[:, -1]
+        if(cur_mode=="guoqiyao"):
+            nowpath = 'F://github//graduate-code//OpenSA//OpenSA' 
+            path =  nowpath+'//Data//Cls//expired_classtable.csv'
+            Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
+            data = Nirdata[:, :-1]
+            label = Nirdata[:, -1]
     return data, label
 
 def SetSplit(method, data, label, test_size=0.2, randomseed=123):

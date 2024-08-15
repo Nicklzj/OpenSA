@@ -18,19 +18,19 @@ Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows
 data1 = Nirdata[:, :-1]
 label1 = Nirdata[:, -1]
 
-# list_of_lists =  []
-# for i in range(len(data1)):
-#     if(i==0):
-#         list_of_lists.append(data1[i])
-#     elif(label1[i]!=label1[i-1]):
-#         list_of_lists.append(data1[i])
-# colors = ['r', 'g', 'b','y','black']  # 使用不同的颜色
-# labellls = ['Origin 1', 'Origin 2', 'Imitation 1:WeFuiry','Imitation 2:EastNorth','Imitation 3:TongDe']  # 每个数据集的标签
-# for sublist, color, labelll in zip(list_of_lists, colors, labellls):
-#     plt.plot(sublist, color=color, label=labelll)
+list_of_lists =  []
+for i in range(len(data1)):
+    if(i==0):
+        list_of_lists.append(data1[i])
+    elif(label1[i]!=label1[i-1]):
+        list_of_lists.append(data1[i])
+colors = ['r', 'b','y','black']  # 使用不同的颜色
+labellls = ['Origin 1-BiLiTong',  'Imitation 1:WeFuiry','Imitation 2:EastNorth','Imitation 3:TongDe']  # 每个数据集的标签
+for sublist, color, labelll in zip(list_of_lists, colors, labellls):
+    plt.plot(sublist, color=color, label=labelll)
 
-# plt.legend()
-# plt.show()
+plt.legend()
+plt.show()
 
 
 if(1):
@@ -47,18 +47,18 @@ if(1):
     data1 = normalized_data
 
 
-# list_of_lists =  []
-# for i in range(len(label1)):
-#     if(i==0):
-#         list_of_lists.append(data1[i])
-#     elif(label1[i]!=label1[i-1]):
-#         list_of_lists.append(data1[i])
-# colors = ['r', 'g', 'b','y','black']  # 使用不同的颜色
-# labels = ['Origin1-BiReiTong', 'Origin 2-TaiNuo', 'Imitation 1:WeFuiry','Imitation 2:EastNorth','Imitation 3:TongDe']  # 每个数据集的标签
-# for sublist, color, labell in zip(list_of_lists, colors, labels):
-#     plt.plot(sublist, color=color, label=labell)
-# plt.legend()
-# plt.show()
+list_of_lists =  []
+for i in range(len(label1)):
+    if(i==0):
+        list_of_lists.append(data1[i])
+    elif(label1[i]!=label1[i-1]):
+        list_of_lists.append(data1[i])
+colors = ['r', 'b','y','black']  # 使用不同的颜色
+labels = ['Origin1-BiLiTong',  'Imitation 1:WeFuiry','Imitation 2:EastNorth','Imitation 3:TongDe']  # 每个数据集的标签
+for sublist, color, labell in zip(list_of_lists, colors, labels):
+    plt.plot(sublist, color=color, label=labell)
+plt.legend()
+plt.show()
 
 
 # 假设 x_data 是形状为 (num_samples, 2048) 的光谱数据，y_data 是相应的类别标签

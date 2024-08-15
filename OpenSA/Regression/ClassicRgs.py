@@ -167,13 +167,30 @@ def Pls( X_train, X_test, y_train, y_test):
     return Rmse, R2, Mae
 
 
+from lazypredict.Supervised import LazyRegressor
 
 def Lazy( X_train, X_test, y_train, y_test):
+
     reg = LazyRegressor(ignore_warnings=False, custom_metric=None)
     # Fit LazyRegressor
     models, predictions = reg.fit(X_train, X_test, y_train, y_test)
     # Print the models
     print(models)
+
+    import sys
+
+    # 保存原来的 sys.stdout
+    original_stdout = sys.stdout
+    with open('regressor_output.txt', 'w') as f:
+        # 重定向 sys.stdout 到文件
+   
+        sys.stdout = f 
+        print(models)
+ 
+    # 恢复原来的 sys.stdout
+    sys.stdout = original_stdout
+
+
     
     # best_model = models.iloc[0]
     # print("----------------------------------------")

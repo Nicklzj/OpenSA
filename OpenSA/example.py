@@ -64,7 +64,7 @@ def SpectralQuantitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, 
     #     data[i] = airpls.airPLS_deBase(data[i])
     # print("-----------去基线成功----------------")
     ProcesedData = Preprocessing(ProcessMethods, data)
-    FeatrueData, labels = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
+    FeatrueData, labels,Featuresecletidx = SpctrumFeatureSelcet(FslecetedMethods, ProcesedData, label)
     # print("---------------------------------------")
     # print(FeatrueData.shape)
     # print(labels.shape)
@@ -98,7 +98,7 @@ def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, S
     print( "波段选择成功,特征数据的形状为：",FeatrueData.shape)
 
 
-    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.15, randomseed=100)
+    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.2, randomseed=101)
  
     acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test,Featuresecletidx )
     
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     mode ="dingxing"
     if(mode=="dingliang"):
         data2, label2 = LoadNirtest('Rgs')
-        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "SNV", "Uve", "ks", "Pls")
+        RMSE, R2, MAE = SpectralQuantitativeAnalysis(data2, label2, "random", "None", "ks", "Pls")
         print("The Pca RMSE:{} R2:{}, MAE:{} of result!".format(RMSE, R2, MAE))
     
     else:
@@ -129,6 +129,8 @@ if __name__ == '__main__':
     # 对整个数据集进行归一化  
     normalized_data = (data1 - min_value) / (max_value - min_value)  
     data1 = normalized_data
+
+
 
     acc = SpectralQualitativeAnalysis(data1, label1, "None", "None", "ks", "RF",[])
     print("The model  acc:{} of result!".format(acc))
