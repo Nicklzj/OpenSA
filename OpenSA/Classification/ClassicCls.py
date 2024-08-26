@@ -191,8 +191,9 @@ def PLS_DA(X_train, X_test, y_train, y_test):
 
 def RF(X_train, X_test, y_train, y_test,Featuresecletidx):
 
-    model_filename = 'pso_random_forest_model.pkl'
-
+    # model_filename = 'pso_random_forest_model.pkl'上面开启的是原研药和仿制药模式
+    model_filename = 'expired_drug.pkl'
+    # 这里开启的是过期药和在期药模式
     # 检查模型文件是否存在
     if os.path.exists(model_filename):
         # 载入模型
@@ -202,7 +203,7 @@ def RF(X_train, X_test, y_train, y_test,Featuresecletidx):
     else:
         RF = RandomForestClassifier(n_estimators=500)
         RF.fit(X_train, y_train)
-        with open('pso_random_forest_model.pkl', 'wb') as file:
+        with open(model_filename, 'wb') as file:
             pickle.dump(RF, file)
  
 

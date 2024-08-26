@@ -22,8 +22,11 @@ parser = argparse.ArgumentParser(description='Your Description Here')
 # 添加参数选项
 parser.add_argument('--filename', type=str, default='None',
                         help='Description of filename option.')
-parser.add_argument('--modelname', type=str, default='pso_random_forest_model.pkl',
+# parser.add_argument('--modelname', type=str, default='pso_random_forest_model.pkl',
+#                         help='Description of model option.')这里是原研药和仿制药模式
+parser.add_argument('--modelname', type=str, default='expired_drug.pkl',
                         help='Description of model option.')
+# 这里开启的是过期药模式
 args = parser.parse_args()
 
 
@@ -204,7 +207,8 @@ SAMValue = SAM(Comp1,Comp2)
 
 y_new_pred=[]
 y_new_pred.append(999)
-if(pearson_corr>=0.80 and pearson_corr >=0.80):
+# 预设为999 unknown的意思
+if( args.modelname=="expired_drug.pkl" or (pearson_corr>=0.80 and pearson_corr >=0.80)):
 	x_newTest = []
 	x_newTest.append(y_list[:-1])
 
@@ -237,26 +241,55 @@ if(pearson_corr>=0.80 and pearson_corr >=0.80):
 
 
 
+if(args.modelname=="pso_random_forest_model.pkl"):
+    beverages = {
+        0: "BiLiTong_Origin",
+        2: "DongBei_Imitation",
+        3:"WeiFuJia_Imitation",
+        4:"TongDe_Imitation",
+        999:"UnKnown"
+    }
+    if(y_new_pred[0]==0 and (pearson_corr<0.99 or cosine_similarity<0.99)):
+        y_new_pred[0]=2
+
+    if(y_new_pred[0]==2 and (pearson_corr>=0.99 or cosine_similarity>=0.99)):
+        y_new_pred[0]=0
+
+    elapsed_time = timer.stop()
+    print(f"Elapsed time: {elapsed_time:.3f} milliseconds")
+
+    print("预测值：",beverages[y_new_pred[0]])
+    # if(y_new_pred[0]==0):
+    #     cosine_similarity=1
+    os.system("python3 Show_box.py --drugname %s --indicators1 %f --indicators2 %f  --indicators3  %f --indicators4  %f" % (beverages[y_new_pred[0]],cosine_similarity,vv,SAMValue,elapsed_time/1000))
+
+elif (args.modelname=="expired_drug.pkl"):
 
 
-beverages = {
-    0: "BiLiTong_Origin",
-    2: "DongBei_Imitation",
-    3:"WeiFuJia_Imitation",
-    4:"TongDe_Imitation",
-    999:"UnKnown"
-}
-if(y_new_pred[0]==0 and (pearson_corr<0.99 or cosine_similarity<0.99)):
-    y_new_pred[0]=2
+        beverages = {
+        0: "0expired_qingmeisuna",
+        2: "1expired_toubaoqusongna",
+        4:"2expired_fufanganlinbabituo",
+        6:"3expired_VC",
+        1:"0normal_qingmeisuna",
+        3:"1normal_toubaoqusongna",
+        5:"2normal_VC",
+        7:"3normal_fufanganlinbabituo",
+        999:"Unknown"
+    }
+        # if(y_new_pred[0]==0 and (pearson_corr<0.99 or cosine_similarity<0.99)):
+        #     y_new_pred[0]=2
 
-if(y_new_pred[0]==2 and (pearson_corr>=0.99 or cosine_similarity>=0.99)):
-    y_new_pred[0]=0
+        # if(y_new_pred[0]==2 and (pearson_corr>=0.99 or cosine_similarity>=0.99)):
+        #     y_new_pred[0]=0
+        
 
-elapsed_time = timer.stop()
-print(f"Elapsed time: {elapsed_time:.3f} milliseconds")
+        elapsed_time = timer.stop()
+        print(f"Elapsed time: {elapsed_time:.3f} milliseconds")
 
-print("预测值：",beverages[y_new_pred[0]])
-# if(y_new_pred[0]==0):
-#     cosine_similarity=1
-os.system("python3 Show_box.py --drugname %s --indicators1 %f --indicators2 %f  --indicators3  %f --indicators4  %f" % (beverages[y_new_pred[0]],cosine_similarity,vv,SAMValue,elapsed_time/1000))
-
+        print("预测值：",beverages[y_new_pred[0]])
+        print("I m here!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("I m here!!!!!!!!!!!!!!!!!!!!!!!!")
+        # if(y_new_pred[0]==0):
+        #     cosine_similarity=1
+        # os.system("python3 Show_box.py --drugname %s --indicators1 %f --indicators2 %f  --indicators3  %f --indicators4  %f" % (beverages[y_new_pred[0]],cosine_similarity,vv,SAMValue,elapsed_time/1000))

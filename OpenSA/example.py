@@ -116,7 +116,7 @@ def SpectralQualitativeAnalysis(data, label, ProcessMethods, FslecetedMethods, S
     print( "波段选择成功,特征数据的形状为：",FeatrueData.shape)
 
 
-    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.15, randomseed=100)
+    X_train, X_test, y_train, y_test = SetSplit(SetSplitMethods, FeatrueData, labels, test_size=0.15, randomseed=101)
  
     acc = QualitativeAnalysis(model, X_train, X_test, y_train, y_test,Featuresecletidx )
     

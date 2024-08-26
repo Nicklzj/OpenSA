@@ -202,7 +202,9 @@ def LoadNirtest(type):
             label = Nirdata[:, -3:-1]
     elif type == "Cls":
  
-        path =  './/Data//Cls//classtable.csv'
+        # path =  './/Data//Cls//classtable.csv'
+        path =  './/Data//Cls//processed_jerry.csv'
+
         Nirdata = np.loadtxt(open(path, 'rb'), dtype=np.float64, delimiter=',', skiprows=0)
         data = Nirdata[:, :-1]
         label = Nirdata[:, -1]
