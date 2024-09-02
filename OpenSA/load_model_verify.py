@@ -73,29 +73,19 @@ timer.start()
 
 
 
-
-
-
-
-
-
-
 # 读取CSV文件   encoding='unicode_escape'
 # file_path = 'liuweny.csv'  # 请将your_file.csv替换为你的CSV文件路径
 #filename = '/home/rock/liuweny.csv'
 print(args.filename)
 # with open(args.filename, mode='r', newline='') as csvfile:
 with open(args.filename, mode='r', newline='') as csvfile:
-
-    csvreader = csv.reader((csvfile))
-    
+    csvreader = csv.reader((csvfile))    
     # 逐行读取数据
     for row in csvreader:
         if(len(row)==0):
             break;
         x_list.append(float(row[0]))
         y_list.append(float(row[1]))
-
 # 打印读取的数据
 print("x_list:", x_list)
 print("y_list:", y_list)
@@ -104,29 +94,23 @@ std_filename = '/home/rock/liuweny.csv'
 std_x_list = []
 std_y_list = []
 with open(std_filename, mode='r', newline='') as csvfile:
-    csvreader = csv.reader((csvfile))
-    
+    csvreader = csv.reader((csvfile))    
     # 逐行读取数据
     for row in csvreader:
         if(len(row)==0):
-            break;
+            break
         std_x_list.append(float(row[0]))
         std_y_list.append(float(row[1]))
 
 # 打印读取的数据
 # print("x_list:", std_x_list)
 # print("y_list:", std_y_list)
-
-
 Comp1=np.array(y_list)
 Comp2=np.array(std_y_list)
 cosine_similarity = np.dot(Comp1, Comp2) / (np.linalg.norm(Comp1) * np.linalg.norm(Comp2))
 pearson_corr = np.corrcoef(Comp1, Comp2)[0, 1]
-
-
 # from scipy.spatial.distance import euclidean
 # from fastdtw import fastdtw
-
 # distance, path = fastdtw(Comp1, Comp2, dist=euclidean)
 # print(f"DTW Distance: {distance}")
 
@@ -150,7 +134,6 @@ pearson_corr = np.corrcoef(Comp1, Comp2)[0, 1]
 
 # 均方误差
 mse = np.mean((Comp1 - Comp2) ** 2)
-
 # 欧氏距离
 euclidean_distance = np.linalg.norm(Comp1 - Comp2)
 
@@ -277,12 +260,7 @@ elif (args.modelname=="expired_drug.pkl"):
         7:"3normal_fufanganlinbabituo",
         999:"Unknown"
     }
-        # if(y_new_pred[0]==0 and (pearson_corr<0.99 or cosine_similarity<0.99)):
-        #     y_new_pred[0]=2
 
-        # if(y_new_pred[0]==2 and (pearson_corr>=0.99 or cosine_similarity>=0.99)):
-        #     y_new_pred[0]=0
-        
 
         elapsed_time = timer.stop()
         print(f"Elapsed time: {elapsed_time:.3f} milliseconds")
@@ -290,6 +268,52 @@ elif (args.modelname=="expired_drug.pkl"):
         print("预测值：",beverages[y_new_pred[0]])
         print("I m here!!!!!!!!!!!!!!!!!!!!!!!!")
         print("I m here!!!!!!!!!!!!!!!!!!!!!!!!")
+        print("余弦相似度：",cosine_similarity,vv,"\nSAM的值:",SAMValue,"\n结束时间:",elapsed_time/1000)
         # if(y_new_pred[0]==0):
         #     cosine_similarity=1
         # os.system("python3 Show_box.py --drugname %s --indicators1 %f --indicators2 %f  --indicators3  %f --indicators4  %f" % (beverages[y_new_pred[0]],cosine_similarity,vv,SAMValue,elapsed_time/1000))
+        print(args.filename)
+        # with open(args.filename, mode='r', newline='') as csvfile:
+        x_list=[]
+        y_list=[]
+        with open(args.filename, mode='r', newline='') as csvfile:
+            csvreader = csv.reader((csvfile))    
+            # 逐行读取数据
+            for row in csvreader:
+                if(len(row)==0):
+                    break
+                x_list.append(float(row[0]))
+                y_list.append(float(row[1]))
+        # 打印读取的数据
+        print("x_list:", x_list)
+        print("y_list:", y_list)
+        if(beverages[y_new_pred[0]]==6 or beverages[y_new_pred[0]]==5):
+            std_filename = '/home/rock/VC15-11-41-45--5956.csv'
+        std_x_list = []
+        std_y_list = []
+        with open(std_filename, mode='r', newline='') as csvfile:
+            csvreader = csv.reader((csvfile))    
+            # 逐行读取数据
+            for row in csvreader:
+                if(len(row)==0):
+                    break
+                std_x_list.append(float(row[0]))
+                std_y_list.append(float(row[1]))
+
+        Comp1=np.array(y_list)
+        Comp2=np.array(std_y_list)
+        print(Comp1.shape,Comp2.shape)
+        cosine_similarity = np.dot(Comp1, Comp2) / (np.linalg.norm(Comp1) * np.linalg.norm(Comp2))
+        pearson_corr = np.corrcoef(Comp1, Comp2)[0, 1]
+                # 均方误差
+        mse = np.mean((Comp1 - Comp2) ** 2)
+        # 欧氏距离
+        euclidean_distance = np.linalg.norm(Comp1 - Comp2)
+        print(f"Pearson Correlation: {pearson_corr}")
+        print(f"Cosine Similarity: {cosine_similarity}")
+        print(f"Mean Squared Error: {mse}")
+        print(f"Euclidean Distance: {euclidean_distance}")
+        if(cosine_similarity>=0.99):
+            print("normal_VC")
+        elif(cosine_similarity<0.99):
+            print("expired_VC")
